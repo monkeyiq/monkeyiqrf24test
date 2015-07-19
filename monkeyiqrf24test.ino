@@ -23,30 +23,36 @@ struct radiomsg {
   };
 };
 
+void timeout()
+{
+  Serial << "Timeout on messages!" << endl;
+}
+
 void setup()
 {
     Serial.begin(57600);
     printf_begin();
-  Serial << "starting radio..." << endl;
-  radio.setup();
-  Serial << "starting loop..." << endl;
+    Serial << "starting radio..." << endl;
+    radio.setup();
+    radio.setTimeout( &timeout );
+    Serial << "starting loop..." << endl;
 
 }
 
 void loop() 
 {
-   if( struct radiomsg* msg = tryGetMessage()) 
+   if( struct radiomsg* msg = radio.tryGetMessage()) 
    {
             switch( msg->type )
             {
                case RMSG_JOYXY:
-                  Serial << "h: << " << msg->joyxy.h << "  v: " << msg->joyxy.v << "\n\r";
+                  Serial << "h: " << msg->joyxy.h << "  v: " << msg->joyxy.v << "\n\r";
                   break;
                case RMSG_JOYBUTTON_DOWN:
-                  pc.printf("button down " << msg->joyb.b << "\n\r";
+                  Serial << "button down " << msg->joyb.b << "\n\r";
                   break;
                case RMSG_JOYBUTTON_UP:
-                  pc.printf("button up " << msg->joyb.b << "\n\r";
+                  Serial << "button up " << msg->joyb.b << "\n\r";
                   break;
                   
             }
